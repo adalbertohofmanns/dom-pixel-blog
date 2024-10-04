@@ -1,13 +1,19 @@
 import type { Metadata } from "next";
 import {
+  AppShell,
+  AppShellHeader,
+  AppShellMain,
   ColorSchemeScript,
   createTheme,
   DEFAULT_THEME,
+  Group,
   MantineProvider,
   mergeMantineTheme,
 } from "@mantine/core";
 import localFont from "next/font/local";
 import "./globals.css";
+import { Header } from "@/components/Header";
+import Image from "next/image";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -44,8 +50,19 @@ export default function RootLayout({
         <ColorSchemeScript />
       </head>
       <body className="antialiased">
-        <MantineProvider theme={theme}>{children}</MantineProvider>
+        <MantineProvider theme={theme}>
+          
+          <AppShell header={{ height: 60 }} padding="md">
+            <AppShellHeader>
+              <Header />
+            </AppShellHeader>
+            <AppShellMain>
+              {children}
+            </AppShellMain>
+          </AppShell>
+        </MantineProvider>
       </body>
     </html>
   );
 }
+
