@@ -28,8 +28,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Next App Mantine Tailwind Template",
-  description: "Next App Mantine Tailwind Template",
+  title: "Blog Dom Pixel",
+  description: "Projeto de blog com Next.js e Mantine - por Adalberto Hofmann",
 };
 
 const theme = mergeMantineTheme(
