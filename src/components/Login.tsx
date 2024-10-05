@@ -1,6 +1,4 @@
 "use client";
-import userLocalStorage from '@/hooks/userLocalStorage';
-
 import { Drawer, TextInput, Button, PasswordInput, ScrollArea, rem } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
@@ -21,12 +19,7 @@ const userSchema = yup.object().shape({
 export default function Login() {
   const [opened, { open, close }] = useDisclosure(false);
 
-  const { loginUser, logoutUser } = userLocalStorage('dpUsers');
-
   const [isUserLoggedIn, setLoggedIn] = useState(false);
-  useEffect(() => {
-    setLoggedIn(!!localStorage.getItem('loggedInUser'));
-  }, []);
 
   const form = useForm({
     initialValues: {
@@ -36,8 +29,8 @@ export default function Login() {
     validate: yupResolver(userSchema),
   });
 
-  const handleLoginSubmit = (values: any) => {
-    const isLogged = loginUser(values.email, values.password);
+  const handleLoginSubmit = (values: {email: string, password: string}) => {
+    const isLogged = true;
 
     if (isLogged === true) {
       close();
@@ -54,7 +47,7 @@ export default function Login() {
   };
 
   const handleLogout = () => {
-    logoutUser();
+    setLoggedIn(false);
     window.location.reload();
   };
 

@@ -1,7 +1,6 @@
 'use client';
 import {
   Group,
-  Button,
   Divider,
   Burger,
   Drawer,
@@ -15,16 +14,12 @@ import Link from 'next/link';
 import Search from './Search';
 import Register from './Register';
 import Login from './Login';
-import { useState, useEffect } from 'react';
-import userLocalStorage from '@/hooks/userLocalStorage';
+import { useState } from 'react';
   
 export function Header() {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false);
   
   const [isUserLoggedIn, setLoggedIn] = useState(false);
-  useEffect(() => {
-    setLoggedIn(!!localStorage.getItem('loggedInUser'));
-  }, []);
 
   return (
     <>

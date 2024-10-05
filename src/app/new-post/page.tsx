@@ -1,13 +1,11 @@
 "use client";
-import useLocalStorage from "@/hooks/postLocalStorage";
-
 import { yupResolver } from 'mantine-form-yup-resolver';
 import * as yup from 'yup';
 import { useForm } from '@mantine/form';
 import { IPost } from "@/types/post";
 import { Container, TextInput, Title, Textarea, Button, FileInput } from "@mantine/core";
 import { useRouter } from "next/navigation";
-import userLocalStorage from "@/hooks/userLocalStorage";
+import { notifications } from "@mantine/notifications";
 
 const schema = yup.object().shape({
   id: yup.string(),
@@ -18,14 +16,9 @@ const schema = yup.object().shape({
   createdAt: yup.string(),
 });
 
-export default function page() {
-  const { addPost } = useLocalStorage('dpPosts');
+export default function Page() {
   const generateId = () => Math.random().toString(36).substr(2, 9);
   const router = useRouter();
-
-  const { userLoggedIn } = userLocalStorage('dpUsers');
-
-  const userId = userLoggedIn();
 
   const form = useForm({
     initialValues: {
@@ -44,11 +37,12 @@ export default function page() {
       ...values,
       id: generateId(),
       createdAt: new Date().toISOString(),
-      userId: userId.id,
+      userId: 1,
     };
 
     const reader = new FileReader();
-    reader.readAsDataURL(values.image as any);
+
+    reader.readAsDataURL(values.image as unknown as Blob);
 
     await new Promise<void>((resolve) => {
       reader.onload = () => {
@@ -57,9 +51,30 @@ export default function page() {
       };
     });
 
-    addPost(newPost);
-    form.reset();
-    router.push('/');
+    const res = await fetch('/api/posts', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newPost),
+    });
+
+    if (res.ok) {
+      const post = await res.json();
+      // Redireciona para a página do post criado
+      // router.push(`/post/${post.id}`);
+      router.push('/');
+    } else {
+      const errorData = await res.json();
+      notifications.show({
+        title: 'Erro',
+        message: errorData.message || 'Erro ao criar o post',
+        color: 'red',
+        position: 'top-right',
+      });
+      form.setErrors(errorData.message || 'Erro ao criar o post');
+    }
+    
   };
 
   return (

@@ -1,18 +1,34 @@
 'use client';
 import { useDisclosure } from '@mantine/hooks';
 import { Drawer, Input, CloseButton, rem, Text, ScrollArea, Divider, Image } from '@mantine/core';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IconSearch } from '@tabler/icons-react';
-import useLocalStorage from '@/hooks/postLocalStorage';
 import Link from 'next/link';
 import { formatDate } from '@/utils/date';
+import { IPost } from '@/types/post';
 
 function Search() {
-  const { posts } = useLocalStorage('dpPosts');
-
   const [opened, { open, close }] = useDisclosure(false);
-
   const [searchvalue, setSearchValue] = useState('');
+
+  const [posts, setPosts] = useState<IPost[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await fetch('/api/posts');
+        const data = await response.json(); 
+        setPosts(data);
+      } catch (error) {
+        console.error('Erro ao buscar os posts:', error);
+      } finally {
+        setLoading(false); 
+      }
+    };
+
+    fetchPosts();
+  }, []);
 
   const searchResults = posts.filter((post) => post.title.toLowerCase().includes(searchvalue.toLowerCase()));
 
@@ -37,6 +53,7 @@ function Search() {
   const renderResults = searchResults.map((post) => (
     <Link href={`/${post.id}`} key={post.id} onClick={close} className='flex flex-col gap-2 items-center p-5 rounded-md transition-transform duration-150 ease-in-out hover:scale-[1.01] hover:shadow-md bg-slate-200'>
       <Image
+        alt={post.title}
         radius="md"
         src={post.image}
         className="max-w-[60%]"

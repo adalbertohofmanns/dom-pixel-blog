@@ -1,5 +1,3 @@
-// converter 2023-10-26T10:00:00.000Z para "26 de outubro de 2023"
-
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 

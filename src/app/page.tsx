@@ -1,8 +1,5 @@
 import { Posts } from "@/components/Posts";
-import {
-  Container,
-  Title,
-} from "@mantine/core";
+import { Container } from "@mantine/core";
 
 export default function page() {
   return (

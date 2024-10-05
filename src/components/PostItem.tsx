@@ -12,7 +12,7 @@ function PostItem({ post }: PostItemProps) {
   return (
     <Card key={post.id} p="md" radius="md" component={Link} href={post.id} className="transition-transform duration-150 ease-in-out hover:scale-[1.01] hover:shadow-md border bg-slate-200">
       <AspectRatio ratio={1920 / 1080}>
-        <Image src={post.image} />
+        <Image src={post.image} alt={post.title} />
       </AspectRatio>
       <Text c="dimmed" size="xs" tt="uppercase" fw={700} mt="md">
         { formatDate(post.createdAt) }

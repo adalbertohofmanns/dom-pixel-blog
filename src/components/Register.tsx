@@ -1,6 +1,4 @@
 "use client";
-import userLocalStorage from '@/hooks/userLocalStorage';
-
 import { Drawer, TextInput, Button, PasswordInput, ScrollArea, rem } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 
@@ -8,6 +6,7 @@ import { yupResolver } from 'mantine-form-yup-resolver';
 import * as yup from 'yup';
 import { useForm } from '@mantine/form';
 import { IUser } from '@/types/user';
+import { useState } from 'react';
 
 const userSchema = yup.object().shape({
   id: yup.string(),
@@ -21,9 +20,8 @@ const userSchema = yup.object().shape({
 });
 
 export default function Register() {
+  const [user, setUser] = useState<IUser>();
   const [opened, { open, close }] = useDisclosure(false);
-
-  const { addUsers } = userLocalStorage('dpUsers');
   const generateId = () => Math.random().toString(36).substr(2, 9);
 
   const form = useForm({
@@ -44,7 +42,7 @@ export default function Register() {
       createdAt: new Date().toISOString(),
     };
 
-    addUsers(newUser);
+    setUser(newUser);
     form.reset();
     close();
   };

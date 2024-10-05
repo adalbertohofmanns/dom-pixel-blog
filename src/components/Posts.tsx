@@ -2,21 +2,26 @@
 import { SimpleGrid, Container, Title, Skeleton, Card } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import PostItem from './PostItem';
-import useLocalStorage from '@/hooks/postLocalStorage';
+import { IPost } from '@/types/post';
 
 export function Posts() {
-  const { posts, addPostsFromMock } = useLocalStorage('dpPosts');
+  const [posts, setPosts] = useState<IPost[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  const [loading, setLoading] = useState(true);
-  
   useEffect(() => {
-    if (posts.length === 0) {
-      addPostsFromMock();
-    }
+    const fetchPosts = async () => {
+      try {
+        const response = await fetch('/api/posts');
+        const data = await response.json(); 
+        setPosts(data);
+      } catch (error) {
+        console.error('Erro ao buscar os posts:', error);
+      } finally {
+        setLoading(false); 
+      }
+    };
 
-    setTimeout(() => {
-      setLoading(false);
-    }, 900);
+    fetchPosts();
   }, []);
   
   if (loading) {
@@ -39,7 +44,15 @@ export function Posts() {
     </Container>;
   }
 
-  const renderPosts = posts.map((post) => <PostItem post={post} />);
+  if (!posts.length) {
+    return <Container>
+      <Title className="text-center my-20">
+        Nenhum post encontrado.
+      </Title>
+    </Container>;
+  }
+
+  const renderPosts = posts.map((post) => <PostItem key={post.id} post={post} />);
 
   return (
     <>

@@ -1,52 +1,58 @@
 "use client";
 import { useEffect, useState } from "react";
-import useLocalStorage from "@/hooks/postLocalStorage";
-import { Container, Image, Title, Text, SimpleGrid, Skeleton, Card, Grid, rem, AspectRatio, GridCol } from "@mantine/core";
+import { Container, Image, Title, Text, SimpleGrid, Skeleton, Card, Grid, rem, AspectRatio } from "@mantine/core";
 import { formatDate } from "@/utils/date";
-import userLocalStorage from "@/hooks/userLocalStorage";
+import { IPost } from "@/types/post";
 
-function page({ params }: { params: { id: string } }) {
-  const { showPost } = useLocalStorage('dpPosts');
-  const post = showPost(params.id);
 
+function Page({ params }: { params: { id: string } }) {
+  const [post, setPost] = useState<IPost | null>(null);
   const [loading, setLoading] = useState(true);
-
-  const { users } = userLocalStorage('dpUsers');
-
-  const user = post ? users.find((user) => user.id === post.userId) : undefined;
   
   useEffect(() => {
-    if (post) {
-      setLoading(false);
-    }
-  }, [post]);
+    const fetchPost = async () => {
+      try {
+        const response = await fetch(`/api/post/${params.id}`);
+        const data = await response.json();
+        setPost(data);
+      } catch (error) {
+        console.error('Erro ao buscar os posts:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchPost();
+  }, []);
+  
+  const PRIMARY_COL_HEIGHT = rem(300);
+  const SECONDARY_COL_HEIGHT = `calc(${PRIMARY_COL_HEIGHT} / 2 - var(--mantine-spacing-md) / 2)`;
 
   if (loading) {
     return <Container>
       <Title className="text-center my-20">
-        Carregando posts...
+        Carregando post...
       </Title>
-      <SimpleGrid cols={{ base: 1, sm: 2 }}>
-        <Skeleton component={Card} p="md" radius="md" className="transition-transform duration-150 ease-in-out hover:scale-[1.01] hover:shadow-md border h-[285.59px]" />
-        <Skeleton component={Card} p="md" radius="md" className="transition-transform duration-150 ease-in-out hover:scale-[1.01] hover:shadow-md border h-[285.59px]" />
-        <Skeleton component={Card} p="md" radius="md" className="transition-transform duration-150 ease-in-out hover:scale-[1.01] hover:shadow-md border h-[285.59px]" />
-        <Skeleton component={Card} p="md" radius="md" className="transition-transform duration-150 ease-in-out hover:scale-[1.01] hover:shadow-md border h-[285.59px]" />
-        <Skeleton component={Card} p="md" radius="md" className="transition-transform duration-150 ease-in-out hover:scale-[1.01] hover:shadow-md border h-[285.59px]" />
-        <Skeleton component={Card} p="md" radius="md" className="transition-transform duration-150 ease-in-out hover:scale-[1.01] hover:shadow-md border h-[285.59px]" />
-        <Skeleton component={Card} p="md" radius="md" className="transition-transform duration-150 ease-in-out hover:scale-[1.01] hover:shadow-md border h-[285.59px]" />
-        <Skeleton component={Card} p="md" radius="md" className="transition-transform duration-150 ease-in-out hover:scale-[1.01] hover:shadow-md border h-[285.59px]" />
-        <Skeleton component={Card} p="md" radius="md" className="transition-transform duration-150 ease-in-out hover:scale-[1.01] hover:shadow-md border h-[285.59px]" />
-        <Skeleton component={Card} p="md" radius="md" className="transition-transform duration-150 ease-in-out hover:scale-[1.01] hover:shadow-md border h-[285.59px]" />
+      <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
+        <Skeleton height={PRIMARY_COL_HEIGHT} radius="md" animate={false} />
+        <Grid gutter="md">
+          <Grid.Col>
+            <Skeleton height={SECONDARY_COL_HEIGHT} radius="md" animate={false} />
+          </Grid.Col>
+        </Grid>
       </SimpleGrid>
+      <div className="flex flex-col gap-5 mt-4">
+        <div className="flex justify-between ">
+          <Skeleton width={100} height={20} />
+          <Skeleton width={100} height={20} />
+        </div>
+      </div>
     </Container>;
   }
 
   if (!post) {
-    return <div>Post not found.</div>;
+    return <div>Post não encontrado.</div>;
   }
-  const PRIMARY_COL_HEIGHT = rem(300);
-
-  const SECONDARY_COL_HEIGHT = `calc(${PRIMARY_COL_HEIGHT} / 2 - var(--mantine-spacing-md) / 2)`;
 
   return (
     <Container>
@@ -80,7 +86,7 @@ function page({ params }: { params: { id: string } }) {
             data: {formatDate(post.createdAt)}
           </Text>
           <Text className="font-bold font-sans" mt={5}>
-            autor: {user?.name || 'Desconhecido'}
+            autor: {'Desconhecido'}
           </Text>
         </div>
       </div>
@@ -89,4 +95,4 @@ function page({ params }: { params: { id: string } }) {
   );
 };
 
-export default page;
+export default Page;
