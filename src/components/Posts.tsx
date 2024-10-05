@@ -57,7 +57,7 @@ export function Posts() {
   return (
     <>
       <Title className="text-center my-20">
-        Bem vido ao Blog Dom Pixel
+        Bem vindo ao Blog Dom Pixel
       </Title>
       <SimpleGrid cols={{ base: 1, sm: 2 }}>
         {renderPosts}
