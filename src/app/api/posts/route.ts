@@ -1,27 +1,26 @@
 import { NextResponse } from 'next/server';
-import { mockPosts } from '@/data/mockPosts';
 import { IPost } from '@/types/post';
 
-const posts = [...mockPosts];
+import { db } from '@/firebase';
+import { collection, addDoc, getDocs } from 'firebase/firestore';
 
 export async function GET() {
-  posts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-
-  return NextResponse.json(mockPosts);
+  const posts = await getDocs(collection(db, 'posts'));
+  const postsData = posts.docs.map((doc) => doc.data());
+  return NextResponse.json(postsData);
 }
 
 export async function POST(request: Request) {
-  const body = await request.json(); 
+  try {
+    const body = await request.json();
+    const newPost: IPost = body;
 
-  if (!body.title || !body.body || !body.image) {
-    return NextResponse.json({ message: "Todos os campos são obrigatórios" }, { status: 400 });
+    await addDoc(collection(db, 'posts'), newPost);
+
+    return NextResponse.json(newPost.id, { status: 201 });
+  } catch (error) {
+    return NextResponse.json({ message: 'Failed to save post' }, { status: 500 });
   }
-
-  const newPost: IPost = body;
-
-  posts.push(newPost);
-
-  return NextResponse.json(newPost, { status: 201 });
 }
 
 export async function PUT(request: Request) {

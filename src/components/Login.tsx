@@ -6,7 +6,11 @@ import { notifications } from '@mantine/notifications';
 import { yupResolver } from 'mantine-form-yup-resolver';
 import * as yup from 'yup';
 import { useForm } from '@mantine/form';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { login } from '@/firebaseAuth';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { auth } from '@/firebase';
+import { useRouter } from 'next/navigation';
 
 const userSchema = yup.object().shape({
   email: yup.string().email('Email inválido').required('Email é obrigatório'),
@@ -17,9 +21,17 @@ const userSchema = yup.object().shape({
 });
 
 export default function Login() {
+  const router = useRouter();
   const [opened, { open, close }] = useDisclosure(false);
 
-  const [isUserLoggedIn, setLoggedIn] = useState(false);
+  const [user, setUser] = useState<any | null>(null);
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const form = useForm({
     initialValues: {
@@ -29,14 +41,12 @@ export default function Login() {
     validate: yupResolver(userSchema),
   });
 
-  const handleLoginSubmit = (values: {email: string, password: string}) => {
-    const isLogged = true;
-    console.info('Login:', values);
-    if (isLogged === true) {
-      close();
-      form.reset();
-      window.location.reload();
-    } else {
+  const handleLoginSubmit = async (values: {email: string, password: string}) => {
+    try {
+      await login(values.email, values.password).then(() => {
+        close();
+      });
+    } catch (err) {
       notifications.show({
         title: 'Erro',
         message: 'Usuário não encontrado ou senha incorreta',
@@ -46,9 +56,13 @@ export default function Login() {
     }
   };
 
-  const handleLogout = () => {
-    setLoggedIn(false);
-    window.location.reload();
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      router.push('/');
+    } catch (error) {
+      console.error('Erro ao fazer logout:', error);
+    }
   };
 
   return (
@@ -78,8 +92,8 @@ export default function Login() {
         </ScrollArea>
       </Drawer>
 
-      {isUserLoggedIn && <Button onClick={handleLogout}>Sair</Button>}
-      {!isUserLoggedIn && <Button onClick={open}>Login</Button>}
+      {user && <Button onClick={handleLogout}>Sair</Button>}
+      {!user && <Button onClick={open}>Login</Button>}
     </>
   );
 }

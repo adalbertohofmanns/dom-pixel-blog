@@ -4,7 +4,6 @@ import { Container, Image, Title, Text, SimpleGrid, Skeleton, Card, Grid, rem, A
 import { formatDate } from "@/utils/date";
 import { IPost } from "@/types/post";
 
-
 function Page({ params }: { params: { id: string } }) {
   const [post, setPost] = useState<IPost | null>(null);
   const [loading, setLoading] = useState(true);
@@ -14,9 +13,13 @@ function Page({ params }: { params: { id: string } }) {
       try {
         const response = await fetch(`/api/post/${params.id}`);
         const data = await response.json();
+        if (data.status === 404) {
+          setPost(null);
+          return;
+        }
         setPost(data);
       } catch (error) {
-        console.error('Erro ao buscar os posts:', error);
+        console.error('Erro ao buscar o post:', error);
       } finally {
         setLoading(false);
       }
@@ -51,7 +54,11 @@ function Page({ params }: { params: { id: string } }) {
   }
 
   if (!post) {
-    return <div>Post não encontrado.</div>;
+    return <Container>
+      <Title className="text-center my-20">
+        Post não encontrado
+      </Title>
+    </Container>;
   }
 
   return (
@@ -83,7 +90,7 @@ function Page({ params }: { params: { id: string } }) {
       <div className="flex flex-col gap-5">
         <div className="flex justify-between">
           <Text c="dimmed" size="xs" tt="uppercase" fw={700} mt="md">
-            data: {formatDate(post.createdAt)}
+            data: { formatDate(post.createdAt) }
           </Text>
           <Text className="font-bold font-sans" mt={5}>
             autor: {'Desconhecido'}

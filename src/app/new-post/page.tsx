@@ -61,7 +61,8 @@ export default function Page() {
 
     if (res.ok) {
       const post = await res.json();
-      router.push(`/post/${post.id}`);
+      form.reset();
+      router.push(`/${post}`);
     } else {
       const errorData = await res.json();
       notifications.show({

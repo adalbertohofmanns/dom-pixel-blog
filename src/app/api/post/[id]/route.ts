@@ -1,14 +1,26 @@
 import { NextResponse } from "next/server";
-import { mockPosts } from "@/data/mockPosts";
+
+import { db } from '@/firebase';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
+
+  console.log(request.url);
+
   const { id } = params;
 
-  const post = mockPosts.find((p) => p.id === id);
+  try {
+    const postsRef = collection(db, 'posts');
+    const q = query(postsRef, where('id', '==', id));
+    const querySnapshot = await getDocs(q);
 
-  if (!post) {
-    return NextResponse.json({ message: "Post não encontrado" }, { status: 404 });
+    if (querySnapshot.empty) {
+      return NextResponse.json({ message: 'Post not found', status: 404 }, { status: 404 });
+    }
+
+    const postData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))[0];
+    return NextResponse.json(postData, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ message: 'Error fetching post' }, { status: 500 });
   }
-
-  return NextResponse.json(post);
 }

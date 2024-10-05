@@ -6,7 +6,10 @@ import { yupResolver } from 'mantine-form-yup-resolver';
 import * as yup from 'yup';
 import { useForm } from '@mantine/form';
 import { IUser } from '@/types/user';
-import { useState } from 'react';
+import { notifications } from '@mantine/notifications';
+
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '@/firebase';
 
 const userSchema = yup.object().shape({
   id: yup.string(),
@@ -20,8 +23,6 @@ const userSchema = yup.object().shape({
 });
 
 export default function Register() {
-  const [user, setUser] = useState<IUser>();
-  console.info('Usuário', user);
   const [opened, { open, close }] = useDisclosure(false);
   const generateId = () => Math.random().toString(36).substr(2, 9);
 
@@ -36,16 +37,25 @@ export default function Register() {
     validate: yupResolver(userSchema),
   });
 
-  const handleRegisterSubmit = (values: IUser) => {
-    const newUser = {
-      ...values,
-      id: generateId(),
-      createdAt: new Date().toISOString(),
-    };
+  const handleRegisterSubmit = async (values: IUser) => {
+    try {
+      const newUser = {
+        ...values,
+        createdAt: new Date().toISOString(),
+      };
 
-    setUser(newUser);
-    form.reset();
-    close();
+      await createUserWithEmailAndPassword(auth, newUser.email, newUser.password).then(() => {
+        form.reset();
+        close();  
+      });
+    } catch (error) {
+      notifications.show({
+        title: 'Erro',
+        message: `Houve um erro ao registrar o usuário - ${error}`,
+        color: 'red',
+        position: 'top-right',
+      });
+    }
   };
 
   return (

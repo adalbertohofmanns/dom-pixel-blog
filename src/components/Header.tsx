@@ -7,6 +7,7 @@ import {
   ScrollArea,
   rem,
   Container,
+  Text,
 } from '@mantine/core';
 
 import { useDisclosure } from '@mantine/hooks';
@@ -14,12 +15,21 @@ import Link from 'next/link';
 import Search from './Search';
 import Register from './Register';
 import Login from './Login';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '@/firebase';
   
 export function Header() {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false);
   
-  const [isUserLoggedIn] = useState(false);
+  const [user, setUser] = useState<any | null>(null);
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   return (
     <>
@@ -30,7 +40,7 @@ export function Header() {
             Home
           </Link>
 
-          {isUserLoggedIn && (
+          {user && (
             <Link href="/new-post">
               Novo post
             </Link>
@@ -39,8 +49,9 @@ export function Header() {
 
         <Group visibleFrom="sm">
           <Search />
+          <Text>Olá, {user?.email}</Text>
           <Login />
-          {!isUserLoggedIn && <Register />}
+          {!user && <Register />}
         </Group>
 
         <Burger opened={drawerOpened} onClick={toggleDrawer} hiddenFrom="sm" />
@@ -67,7 +78,7 @@ export function Header() {
               Home
             </Link>
             
-            {isUserLoggedIn && (
+            {user && (
               <Link href="/new-post">
                 Novo post
               </Link>
@@ -78,7 +89,7 @@ export function Header() {
 
           <Group justify="center" grow pb="xl" px="md">
             <Login />
-            {!isUserLoggedIn && <Register />}
+            {!user && <Register />}
           </Group>
         </ScrollArea>
       </Drawer>

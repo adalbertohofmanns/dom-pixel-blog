@@ -3,6 +3,7 @@ import { SimpleGrid, Container, Title, Skeleton, Card } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import PostItem from './PostItem';
 import { IPost } from '@/types/post';
+import { mockPosts } from '@/data/mockPosts';
 
 export function Posts() {
   const [posts, setPosts] = useState<IPost[]>([]);
@@ -12,7 +13,7 @@ export function Posts() {
     const fetchPosts = async () => {
       try {
         const response = await fetch('/api/posts');
-        const data = await response.json(); 
+        const data = await response.json();
         setPosts(data);
       } catch (error) {
         console.error('Erro ao buscar os posts:', error);
