@@ -12,7 +12,6 @@ function Search() {
   const [searchvalue, setSearchValue] = useState('');
 
   const [posts, setPosts] = useState<IPost[]>([]);
-  const [, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -22,8 +21,6 @@ function Search() {
         setPosts(data);
       } catch (error) {
         console.error('Erro ao buscar os posts:', error);
-      } finally {
-        setLoading(false); 
       }
     };
 
