@@ -21,6 +21,6 @@ export async function GET(request: Request, { params }: { params: { id: string }
     const postData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))[0];
     return NextResponse.json(postData, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ message: 'Error fetching post' }, { status: 500 });
+    return NextResponse.json({ message: 'Error fetching post', error }, { status: 500 });
   }
 }

@@ -22,7 +22,7 @@ import { auth } from '@/firebase';
 export function Header() {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false);
   
-  const [user, setUser] = useState<any | null>(null);
+  const [user, setUser] = useState<any>(null);
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);

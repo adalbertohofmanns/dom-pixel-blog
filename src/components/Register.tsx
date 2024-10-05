@@ -41,6 +41,7 @@ export default function Register() {
     try {
       const newUser = {
         ...values,
+        userId: generateId(),
         createdAt: new Date().toISOString(),
       };
 

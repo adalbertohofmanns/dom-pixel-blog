@@ -24,6 +24,7 @@ export default function Login() {
   const router = useRouter();
   const [opened, { open, close }] = useDisclosure(false);
 
+  // @ts-ignore
   const [user, setUser] = useState<any | null>(null);
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -49,7 +50,7 @@ export default function Login() {
     } catch (err) {
       notifications.show({
         title: 'Erro',
-        message: 'Usuário não encontrado ou senha incorreta',
+        message: `Usuário não encontrado ou senha incorreta (${err})`,
         color: 'red',
         position: 'top-right',
       });

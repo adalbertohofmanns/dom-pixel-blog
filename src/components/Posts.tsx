@@ -3,7 +3,6 @@ import { SimpleGrid, Container, Title, Skeleton, Card } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import PostItem from './PostItem';
 import { IPost } from '@/types/post';
-import { mockPosts } from '@/data/mockPosts';
 
 export function Posts() {
   const [posts, setPosts] = useState<IPost[]>([]);
