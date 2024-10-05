@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { mockPosts } from '@/data/mockPosts';
 import { IPost } from '@/types/post';
 
-let posts = [...mockPosts];
+const posts = [...mockPosts];
 
 export async function GET() {
   posts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());

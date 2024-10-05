@@ -19,7 +19,7 @@ import { useState } from 'react';
 export function Header() {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false);
   
-  const [isUserLoggedIn, setLoggedIn] = useState(false);
+  const [isUserLoggedIn] = useState(false);
 
   return (
     <>

@@ -23,7 +23,7 @@ function Page({ params }: { params: { id: string } }) {
     };
     
     fetchPost();
-  }, []);
+  }, [params.id]);
   
   const PRIMARY_COL_HEIGHT = rem(300);
   const SECONDARY_COL_HEIGHT = `calc(${PRIMARY_COL_HEIGHT} / 2 - var(--mantine-spacing-md) / 2)`;

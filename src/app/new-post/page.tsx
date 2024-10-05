@@ -61,9 +61,7 @@ export default function Page() {
 
     if (res.ok) {
       const post = await res.json();
-      // Redireciona para a página do post criado
-      // router.push(`/post/${post.id}`);
-      router.push('/');
+      router.push(`/post/${post.id}`);
     } else {
       const errorData = await res.json();
       notifications.show({

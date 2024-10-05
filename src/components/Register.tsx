@@ -21,6 +21,7 @@ const userSchema = yup.object().shape({
 
 export default function Register() {
   const [user, setUser] = useState<IUser>();
+  console.info('Usuário', user);
   const [opened, { open, close }] = useDisclosure(false);
   const generateId = () => Math.random().toString(36).substr(2, 9);
 

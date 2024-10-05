@@ -12,7 +12,7 @@ function Search() {
   const [searchvalue, setSearchValue] = useState('');
 
   const [posts, setPosts] = useState<IPost[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchPosts = async () => {

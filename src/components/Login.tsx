@@ -6,7 +6,7 @@ import { notifications } from '@mantine/notifications';
 import { yupResolver } from 'mantine-form-yup-resolver';
 import * as yup from 'yup';
 import { useForm } from '@mantine/form';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 const userSchema = yup.object().shape({
   email: yup.string().email('Email inválido').required('Email é obrigatório'),
@@ -31,7 +31,7 @@ export default function Login() {
 
   const handleLoginSubmit = (values: {email: string, password: string}) => {
     const isLogged = true;
-
+    console.info('Login:', values);
     if (isLogged === true) {
       close();
       form.reset();
