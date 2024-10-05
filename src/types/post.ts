@@ -2,6 +2,7 @@ export interface IPost {
   id: string;
   title: string;
   body: string;
-  userId: number;
-  createdAt: Date;
+  image: string;
+  userId: string;
+  createdAt: string;
 }
