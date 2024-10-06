@@ -4,9 +4,6 @@ import { db } from '@/firebase';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
-
-  console.log(request.url);
-
   const { id } = params;
 
   try {

@@ -16,7 +16,7 @@ function Search() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch('/api/posts');
+        const response = await fetch(`/api/search?q=${searchvalue}`);
         const data = await response.json(); 
         setPosts(data);
       } catch (error) {
@@ -25,9 +25,9 @@ function Search() {
     };
 
     fetchPosts();
-  }, []);
+  }, [searchvalue]);
 
-  const searchResults = posts.filter((post) => post.title.toLowerCase().includes(searchvalue.toLowerCase()));
+  // const searchResults = posts.filter((post) => post.title.toLowerCase().includes(searchvalue.toLowerCase()));
 
   const renderSearch = (
     <Input
@@ -47,18 +47,23 @@ function Search() {
     />
   )
 
-  const renderResults = searchResults.map((post) => (
-    <Link href={`/${post.id}`} key={post.id} onClick={close} className='flex flex-col gap-2 items-center p-5 rounded-md transition-transform duration-150 ease-in-out hover:scale-[1.01] hover:shadow-md bg-slate-200'>
-      <Image
-        alt={post.title}
-        radius="md"
-        src={post.image}
-        className="max-w-[60%]"
-      />
-      <Text>{post.title}</Text>
-      <Text c="dimmed" size="xs" tt="uppercase" fw={700}>{formatDate(post.createdAt)}</Text>
-    </Link>
-  ));
+  const renderResults = () => {
+    if (!posts.length) {
+      return <Text>Nenhum post encontrado.</Text>
+    }
+    return posts.map((post) => (
+      <Link href={`/${post.id}`} key={post.id} onClick={close} className='flex flex-col gap-2 items-center p-5 rounded-md transition-transform duration-150 ease-in-out hover:scale-[1.01] hover:shadow-md bg-slate-200'>
+        <Image
+          alt={post.title}
+          radius="md"
+          src={post.image}
+          className="max-w-[60%]"
+        />
+        <Text>{post.title}</Text>
+        <Text c="dimmed" size="xs" tt="uppercase" fw={700}>{formatDate(post.createdAt)}</Text>
+      </Link>
+    ))
+  };
 
   return (
     <>
@@ -72,7 +77,8 @@ function Search() {
           
           <div className="px-5">
             <div className="flex flex-col gap-5">
-              {searchvalue.length > 3 ? renderResults : null}
+              {/* {searchvalue.length > 3 ? renderResults : null} */}
+              { renderResults() }
             </div>
           </div>
 
