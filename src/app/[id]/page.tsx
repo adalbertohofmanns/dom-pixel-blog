@@ -44,8 +44,8 @@ function Page({ params }: { params: { id: string } }) {
           </Grid.Col>
         </Grid>
       </SimpleGrid>
-      <div className="flex flex-col gap-5 mt-4">
-        <div className="flex justify-between ">
+      <div className="flex flex-col">
+        <div className="flex justify-around ">
           <Skeleton width={100} height={20} />
           <Skeleton width={100} height={20} />
         </div>
@@ -87,16 +87,23 @@ function Page({ params }: { params: { id: string } }) {
         </Grid>
       </SimpleGrid>
 
-      <div className="flex flex-col gap-5">
-        <div className="flex justify-between">
-          <Text c="dimmed" size="xs" tt="uppercase" fw={700} mt="md">
-            data: { formatDate(post.createdAt) }
-          </Text>
-          <Text className="font-bold font-sans" mt={5}>
-            autor: {'Desconhecido'}
-          </Text>
-        </div>
-      </div>
+      <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
+        <Grid gutter="md">
+          <Grid.Col>
+            <Text c="dimmed" size="xs" tt="uppercase" fw={700} className="text-center" >
+              data: { formatDate(post.createdAt) }
+            </Text>
+          </Grid.Col>
+        </Grid>
+            
+        <Grid gutter="md">
+          <Grid.Col>
+            <Text size="xs" fw={900} className="text-center">
+              autor: {'Desconhecido'}
+            </Text>
+          </Grid.Col>
+        </Grid>
+      </SimpleGrid>
       
     </Container>
   );
