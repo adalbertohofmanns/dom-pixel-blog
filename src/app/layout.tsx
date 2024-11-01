@@ -28,7 +28,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Blog Dom Pixel",
+  title: "Blog do Hofmann",
   description: "Projeto de blog com Next.js e Mantine - por Adalberto Hofmann",
 };
 
